@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 
+type Theme = 'light' | 'dark'
+
 export type Todo = {
   id: string
   title: string
   description: string
-  category: string   // category ID
+  category: string   
   date: string
   completed: boolean
 }
@@ -17,7 +19,7 @@ export type Category = {
 type TodoStore = {
   todos: Todo[]
   categories: Category[]
-
+   theme: Theme
   addTodo: (todo: Todo) => void
   updateTodo: (todo: Todo) => void
   removeTodo: (id: string) => void
@@ -25,6 +27,10 @@ type TodoStore = {
   addCategory: (category: Category) => void
   updateCategory: (category: Category) => void
   removeCategory: (id: string) => void
+
+
+  toggleTheme: () => void
+  
 }
 
 export const useTodoStore = create<TodoStore>((set) => ({
@@ -60,6 +66,13 @@ export const useTodoStore = create<TodoStore>((set) => ({
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),
       todos: state.todos.filter((t) => t.category !== id), // cascade delete
+    })),
+    
+    theme: 'light',
+
+  toggleTheme: () =>
+    set((state) => ({
+      theme: state.theme === 'light' ? 'dark' : 'light',
     })),
 }))
 

@@ -15,6 +15,7 @@ import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodosNewRouteImport } from './routes/todos/new'
 import { Route as TodosTodoIdRouteImport } from './routes/todos/$todoId'
+import { Route as CategoriesCategoryIdRouteImport } from './routes/categories/$categoryId'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -46,29 +47,37 @@ const TodosTodoIdRoute = TodosTodoIdRouteImport.update({
   path: '/todos/$todoId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriesCategoryIdRoute = CategoriesCategoryIdRouteImport.update({
+  id: '/$categoryId',
+  path: '/$categoryId',
+  getParentRoute: () => CategoriesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRoute
+  '/categories': typeof CategoriesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/todos/$todoId': typeof TodosTodoIdRoute
   '/todos/new': typeof TodosNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRoute
+  '/categories': typeof CategoriesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/todos/$todoId': typeof TodosTodoIdRoute
   '/todos/new': typeof TodosNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRoute
+  '/categories': typeof CategoriesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/todos/$todoId': typeof TodosTodoIdRoute
   '/todos/new': typeof TodosNewRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/profile'
     | '/settings'
+    | '/categories/$categoryId'
     | '/todos/$todoId'
     | '/todos/new'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/profile'
     | '/settings'
+    | '/categories/$categoryId'
     | '/todos/$todoId'
     | '/todos/new'
   id:
@@ -95,13 +106,14 @@ export interface FileRouteTypes {
     | '/categories'
     | '/profile'
     | '/settings'
+    | '/categories/$categoryId'
     | '/todos/$todoId'
     | '/todos/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CategoriesRoute: typeof CategoriesRoute
+  CategoriesRoute: typeof CategoriesRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   TodosTodoIdRoute: typeof TodosTodoIdRoute
@@ -152,12 +164,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TodosTodoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categories/$categoryId': {
+      id: '/categories/$categoryId'
+      path: '/$categoryId'
+      fullPath: '/categories/$categoryId'
+      preLoaderRoute: typeof CategoriesCategoryIdRouteImport
+      parentRoute: typeof CategoriesRoute
+    }
   }
 }
 
+interface CategoriesRouteChildren {
+  CategoriesCategoryIdRoute: typeof CategoriesCategoryIdRoute
+}
+
+const CategoriesRouteChildren: CategoriesRouteChildren = {
+  CategoriesCategoryIdRoute: CategoriesCategoryIdRoute,
+}
+
+const CategoriesRouteWithChildren = CategoriesRoute._addFileChildren(
+  CategoriesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CategoriesRoute: CategoriesRoute,
+  CategoriesRoute: CategoriesRouteWithChildren,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   TodosTodoIdRoute: TodosTodoIdRoute,
