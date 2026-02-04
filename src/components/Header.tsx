@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
-import { Profiler, useState } from 'react'
-import { Home, Menu, OptionIcon, Settings, X ,User,List} from 'lucide-react'
+import { useState } from 'react'
+import { Home, Menu, Settings, X ,User,List} from 'lucide-react'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
