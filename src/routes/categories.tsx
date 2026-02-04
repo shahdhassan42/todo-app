@@ -72,13 +72,9 @@ function CategoriesPage() {
               </>
             ) : (
               <>
-          <Link
-  to={`/categories/${c.id}` as any}
-  className="flex-1 text-blue-600 hover:underline"
->
-  {c.name}
-</Link>
-
+                <Link to="/categories/$categoryId" params={{ categoryId: c.id }} className="flex-1 text-blue-600 hover:underline">
+                  {c.name}
+                </Link>
 
                 <div className="flex gap-2">
                   <button

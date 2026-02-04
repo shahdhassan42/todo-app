@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useTodoStore } from '../../store/todoStore'
 import { Link } from '@tanstack/react-router'
-import { Route as TodoRoute } from '../todos/$todoId'
 
 export const Route = createFileRoute('/categories/$categoryId')({
   component: CategoryTodosPage,
@@ -9,8 +8,14 @@ export const Route = createFileRoute('/categories/$categoryId')({
 
 function CategoryTodosPage() {
   const { categoryId } = Route.useParams()
-  const category = useTodoStore((s) => s.categories.find((c) => c.id === categoryId))
-  const todos = useTodoStore((s) => s.todos.filter((t) => t.category === categoryId))
+
+  const category = useTodoStore((s) =>
+    s.categories.find((c) => c.id === categoryId)
+  )
+
+  const todos = useTodoStore((s) =>
+    s.todos.filter((t) => t.category === categoryId)
+  )
 
   if (!category) return <p className="p-6">Category not found</p>
 
@@ -24,10 +29,7 @@ function CategoryTodosPage() {
         <ul className="space-y-2">
           {todos.map((t) => (
             <li key={t.id} className="border p-2 rounded flex justify-between items-center">
-            <Link to="/todos/$todoId" params={{ todoId: t.id }} className="flex-1">
-  {t.title}
-</Link>
-
+              <Link to="/todos/$todoId" params={{ todoId: t.id }} className="flex-1">{t.title}</Link>
             </li>
           ))}
         </ul>
