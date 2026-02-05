@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+
 type Theme = 'light' | 'dark'
 
 export type Todo = {
@@ -9,7 +10,6 @@ export type Todo = {
   description: string
   category: string
   date: string
-  completed: boolean
 }
 
 export type Category = {

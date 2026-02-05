@@ -1,8 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Route as RootRoute } from '../../routes/__root'
 import { useState } from 'react'
 import { useTodoStore, type Category } from '../../store/todoStore'
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from 'nanoid'
 
 export const Route = createFileRoute('/todos/new')({
   component: () => {
@@ -17,7 +16,7 @@ export const Route = createFileRoute('/todos/new')({
       if (!title) return alert('Title is required')
 
       addTodo({
-        id: uuidv4(),
+        id: nanoid(),
         title,
         description,
         category,

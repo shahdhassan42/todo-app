@@ -10,7 +10,9 @@ function HomePage() {
   const categories = useTodoStore((s) => s.categories)
 
   return (
-    <div className="p-8">
+   <div className="min-h-screen flex justify-center">
+  <div className="w-full max-w-2xl p-8">
+
       <h1 className="text-3xl font-bold mb-4">Todos</h1>
 
       <Link
@@ -36,6 +38,7 @@ function HomePage() {
           )
         })}
       </ul>
+    </div>
     </div>
   )
 }

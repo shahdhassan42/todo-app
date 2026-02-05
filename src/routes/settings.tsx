@@ -1,67 +1,39 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useTodoStore } from '../store/todoStore'
 
 export const Route = createFileRoute('/settings')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
- 
-  // Load saved mode from localStorage
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  )
-
-  // Apply class to body whenever darkMode changes
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark")
-    } else {
-      document.body.classList.remove("dark")
-    }
-
-    localStorage.setItem("darkMode", String(darkMode))
-  }, [darkMode])
+  const theme = useTodoStore((s) => s.theme)
+  const toggleTheme = useTodoStore((s) => s.toggleTheme)
+const darkMode = theme === 'dark'
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>
-        Settings
-      </h1>
+    <div className="min-h-screen flex justify-center">
+      <div className="w-full max-w-xl p-8">
+        <h1 className="text-3xl font-bold mb-8 text-center">Settings</h1>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-        <span>Light</span>
+        <div className="flex items-center justify-center gap-4">
+          <span>Light</span>
 
-        {/* Toggle Switch */}
-        <div
-          onClick={() => setDarkMode(!darkMode)}
-          style={{
-            width: "50px",
-            height: "26px",
-            background: darkMode ? "#4f46e5" : "#ccc",
-            borderRadius: "50px",
-            position: "relative",
-            cursor: "pointer",
-            transition: "background 0.3s ease",
-          }}
-        >
           <div
-            style={{
-              width: "22px",
-              height: "22px",
-              background: "white",
-              borderRadius: "50%",
-              position: "absolute",
-              top: "2px",
-              left: darkMode ? "26px" : "2px",
-              transition: "left 0.3s ease",
-            }}
-          />
-        </div>
+           onClick={toggleTheme}
+            className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors duration-300 ${
+              darkMode ? 'bg-indigo-600' : 'bg-gray-300'
+            }`}
+          >
+            <div
+              className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-all duration-300 ${
+                darkMode ? 'left-6' : 'left-0.5'
+              }`}
+            />
+          </div>
 
-        <span>Dark</span>
+          <span>Dark</span>
+        </div>
       </div>
     </div>
   )
-
 }

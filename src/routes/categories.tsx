@@ -1,9 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { useTodoStore } from '../store/todoStore'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
-import { Link } from '@tanstack/react-router'
-import { Route as CategoryRoute } from './categories/$categoryId'
 
 export const Route = createFileRoute('/categories')({
   component: CategoriesPage,
@@ -11,6 +9,7 @@ export const Route = createFileRoute('/categories')({
 
 function CategoriesPage() {
   const categories = useTodoStore((s) => s.categories)
+  const todos = useTodoStore((s) => s.todos)
   const addCategory = useTodoStore((s) => s.addCategory)
   const removeCategory = useTodoStore((s) => s.removeCategory)
   const updateCategory = useTodoStore((s) => s.updateCategory)
@@ -19,16 +18,26 @@ function CategoriesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingName, setEditingName] = useState('')
 
-  return (
-    <div className="p-8 max-w-lg">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+  const getTodoCountForCategory = (categoryId: string) =>
+    todos.filter((t) => t.category === categoryId).length
 
-      <div className="flex gap-2 mb-6">
+  return (
+    <div className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-center">Categories</h1>
+
+      {/* Add new category */}
+      <div className="flex gap-2 mb-8">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="New category..."
-          className="border p-2 rounded w-full"
+          placeholder="New category name..."
+          className="border p-3 rounded-lg w-full"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && name.trim()) {
+              addCategory({ id: nanoid(), name })
+              setName('')
+            }
+          }}
         />
         <button
           onClick={() => {
@@ -36,21 +45,33 @@ function CategoriesPage() {
             addCategory({ id: nanoid(), name })
             setName('')
           }}
-          className="bg-blue-600 text-white px-4 rounded"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
         >
           Add
         </button>
       </div>
 
-      <ul className="space-y-2">
+      {/* Category list */}
+      <ul className="space-y-3">
         {categories.map((c) => (
-          <li key={c.id} className="flex justify-between items-center border p-2 rounded">
+          <li
+            key={c.id}
+            className="border rounded-lg p-4 hover:bg-gray-50 transition-colors flex justify-between items-center"
+          >
             {editingId === c.id ? (
-              <>
+              /* Editing mode */
+              <div className="flex flex-1 gap-2">
                 <input
-                  className="border p-1 rounded mr-2 flex-1"
+                  className="border p-2 rounded flex-1"
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && editingName.trim()) {
+                      updateCategory({ id: c.id, name: editingName })
+                      setEditingId(null)
+                      setEditingName('')
+                    }
+                  }}
                 />
                 <button
                   onClick={() => {
@@ -59,34 +80,51 @@ function CategoriesPage() {
                     setEditingId(null)
                     setEditingName('')
                   }}
-                  className="bg-green-600 text-white px-2 rounded"
+                  className="bg-green-600 text-white px-3 py-2 rounded"
                 >
                   Save
                 </button>
                 <button
-                  onClick={() => setEditingId(null)}
-                  className="bg-gray-400 text-white px-2 rounded ml-1"
+                  onClick={() => {
+                    setEditingId(null)
+                    setEditingName('')
+                  }}
+                  className="bg-gray-400 text-white px-3 py-2 rounded"
                 >
                   Cancel
                 </button>
-              </>
+              </div>
             ) : (
+              /* Normal mode: category link + action buttons */
               <>
-                <Link to="/categories/$categoryId" params={{ categoryId: c.id }} className="flex-1 text-blue-600 hover:underline">
-                  {c.name}
+                <Link
+                  to="/categories/$categoryId"
+                  params={{ categoryId: c.id }}
+                  className="flex-1 block"
+                >
+                  <h3 className="font-semibold text-lg">{c.name}</h3>
+                  <p className="text-gray-600 text-sm">
+                    {getTodoCountForCategory(c.id)}{' '}
+                    {getTodoCountForCategory(c.id) === 1 ? 'todo' : 'todos'}
+                  </p>
                 </Link>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 ml-4">
                   <button
                     onClick={() => {
                       setEditingId(c.id)
                       setEditingName(c.name)
                     }}
-                    className="bg-yellow-500 text-white px-2 rounded"
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                   >
                     Edit
                   </button>
-                  <button onClick={() => removeCategory(c.id)} className="text-red-600">
+                  <button
+                    onClick={() => {
+                      if (confirm(`Delete "${c.name}"?`)) removeCategory(c.id)
+                    }}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
                     Delete
                   </button>
                 </div>
@@ -95,6 +133,8 @@ function CategoriesPage() {
           </li>
         ))}
       </ul>
+
+      <Outlet />
     </div>
   )
 }
