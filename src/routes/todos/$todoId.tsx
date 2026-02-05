@@ -1,12 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useTodoStore } from '../../store/todoStore'
 import { useState } from 'react'
+import { Edit, LucideDelete} from 'lucide-react'
 
 export const Route = createFileRoute('/todos/$todoId')({
   component: TodoDetailsPage,
 })
 
 function TodoDetailsPage() {
+  const navigate = useNavigate()
   const { todoId } = Route.useParams()
   const todos = useTodoStore((s) => s.todos)
   const deleteTodo = useTodoStore((s) => s.removeTodo)
@@ -25,7 +27,8 @@ function TodoDetailsPage() {
   }
 
   return (
-    <div className="p-8 max-w-lg">
+    <div className="min-h-screen flex justify-center">
+      <div className="w-full max-w-xl p-8">
       {editing ? (
         <>
           <input className="border p-2 w-full mb-2" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -43,19 +46,23 @@ function TodoDetailsPage() {
           <p className="mb-2">{todo.description}</p>
           <p className="mb-2">Date: {new Date(todo.date).toLocaleString()}</p>
           <button onClick={() => setEditing(true)} className="bg-yellow-500 text-white px-4 rounded mr-2">
+            <Edit size={16} className="inline-block mr-1" />
             Edit
           </button>
           <button
             onClick={() => {
               deleteTodo(todo.id)
               alert('Deleted!')
+              navigate({ to: '/' })
             }}
             className="bg-red-600 text-white px-4 rounded"
           >
+            <LucideDelete size={16} className="inline-block mr-1" />
             Delete
           </button>
         </>
       )}
+    </div>
     </div>
   )
 }

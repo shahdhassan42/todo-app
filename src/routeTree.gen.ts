@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as CategoryRouteImport } from './routes/category'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodosNewRouteImport } from './routes/todos/new'
 import { Route as TodosTodoIdRouteImport } from './routes/todos/$todoId'
@@ -27,9 +27,9 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategoriesRoute = CategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
+const CategoryRoute = CategoryRouteImport.update({
+  id: '/category',
+  path: '/category',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -48,14 +48,14 @@ const TodosTodoIdRoute = TodosTodoIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoriesCategoryIdRoute = CategoriesCategoryIdRouteImport.update({
-  id: '/$categoryId',
-  path: '/$categoryId',
-  getParentRoute: () => CategoriesRoute,
+  id: '/categories/$categoryId',
+  path: '/categories/$categoryId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRouteWithChildren
+  '/category': typeof CategoryRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
@@ -64,7 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRouteWithChildren
+  '/category': typeof CategoryRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
@@ -74,7 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/categories': typeof CategoriesRouteWithChildren
+  '/category': typeof CategoryRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
@@ -85,7 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/categories'
+    | '/category'
     | '/profile'
     | '/settings'
     | '/categories/$categoryId'
@@ -94,7 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/categories'
+    | '/category'
     | '/profile'
     | '/settings'
     | '/categories/$categoryId'
@@ -103,7 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/categories'
+    | '/category'
     | '/profile'
     | '/settings'
     | '/categories/$categoryId'
@@ -113,9 +113,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CategoriesRoute: typeof CategoriesRouteWithChildren
+  CategoryRoute: typeof CategoryRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
+  CategoriesCategoryIdRoute: typeof CategoriesCategoryIdRoute
   TodosTodoIdRoute: typeof TodosTodoIdRoute
   TodosNewRoute: typeof TodosNewRoute
 }
@@ -136,11 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/categories': {
-      id: '/categories'
-      path: '/categories'
-      fullPath: '/categories'
-      preLoaderRoute: typeof CategoriesRouteImport
+    '/category': {
+      id: '/category'
+      path: '/category'
+      fullPath: '/category'
+      preLoaderRoute: typeof CategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -166,31 +167,20 @@ declare module '@tanstack/react-router' {
     }
     '/categories/$categoryId': {
       id: '/categories/$categoryId'
-      path: '/$categoryId'
+      path: '/categories/$categoryId'
       fullPath: '/categories/$categoryId'
       preLoaderRoute: typeof CategoriesCategoryIdRouteImport
-      parentRoute: typeof CategoriesRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface CategoriesRouteChildren {
-  CategoriesCategoryIdRoute: typeof CategoriesCategoryIdRoute
-}
-
-const CategoriesRouteChildren: CategoriesRouteChildren = {
-  CategoriesCategoryIdRoute: CategoriesCategoryIdRoute,
-}
-
-const CategoriesRouteWithChildren = CategoriesRoute._addFileChildren(
-  CategoriesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CategoriesRoute: CategoriesRouteWithChildren,
+  CategoryRoute: CategoryRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
+  CategoriesCategoryIdRoute: CategoriesCategoryIdRoute,
   TodosTodoIdRoute: TodosTodoIdRoute,
   TodosNewRoute: TodosNewRoute,
 }

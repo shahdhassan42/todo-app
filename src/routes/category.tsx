@@ -2,8 +2,10 @@ import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { useTodoStore } from '../store/todoStore'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
+import { Edit, LucideDelete} from 'lucide-react'
 
-export const Route = createFileRoute('/categories')({
+
+export const Route = createFileRoute('/category')({
   component: CategoriesPage,
 })
 
@@ -24,7 +26,6 @@ function CategoriesPage() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">Categories</h1>
-
       {/* Add new category */}
       <div className="flex gap-2 mb-8">
         <input
@@ -50,7 +51,6 @@ function CategoriesPage() {
           Add
         </button>
       </div>
-
       {/* Category list */}
       <ul className="space-y-3">
         {categories.map((c) => (
@@ -60,7 +60,7 @@ function CategoriesPage() {
           >
             {editingId === c.id ? (
               /* Editing mode */
-              <div className="flex flex-1 gap-2">
+              (<div className="flex flex-1 gap-2">
                 <input
                   className="border p-2 rounded flex-1"
                   value={editingName}
@@ -93,10 +93,10 @@ function CategoriesPage() {
                 >
                   Cancel
                 </button>
-              </div>
+              </div>)
             ) : (
-              /* Normal mode: category link + action buttons */
-              <>
+              /*category link + action buttons */
+              (<>
                 <Link
                   to="/categories/$categoryId"
                   params={{ categoryId: c.id }}
@@ -108,7 +108,6 @@ function CategoriesPage() {
                     {getTodoCountForCategory(c.id) === 1 ? 'todo' : 'todos'}
                   </p>
                 </Link>
-
                 <div className="flex gap-2 ml-4">
                   <button
                     onClick={() => {
@@ -117,6 +116,7 @@ function CategoriesPage() {
                     }}
                     className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                   >
+                    <Edit size={16} className="inline-block mr-1" />
                     Edit
                   </button>
                   <button
@@ -125,15 +125,15 @@ function CategoriesPage() {
                     }}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                   >
+                    <LucideDelete size={16} className="inline-block mr-1" />
                     Delete
                   </button>
                 </div>
-              </>
+              </>)
             )}
           </li>
         ))}
       </ul>
-
       <Outlet />
     </div>
   )

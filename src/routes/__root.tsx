@@ -10,22 +10,17 @@ export const Route = createRootRoute({
   component: () => {
 
 const theme = useTodoStore((s) => s.theme)
-    const router = useRouter() // Add this for debugging
+    const router = useRouter() 
 
     useEffect(() => {
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+      document.body.classList.remove('dark', 'light')
+      document.body.classList.add(theme)},[theme])
       
       // Debug: Log route changes
       const unsubscribe = router.subscribe('onBeforeNavigate', (e) => {
         console.log('Navigation attempt:', e.toLocation.href)
       })
       
-      return () => unsubscribe()
-    }, [theme, router])
 
     return (
       <>

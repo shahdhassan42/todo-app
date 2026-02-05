@@ -1,32 +1,34 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useTodoStore } from '../../store/todoStore'
 import { Link } from '@tanstack/react-router'
+import { useMemo } from 'react'
 
 export const Route = createFileRoute('/categories/$categoryId')({
   component: CategoryTodosPage,
 })
 
 function CategoryTodosPage() {
-  const { categoryId } = Route.useParams()
+  const categoryId = Route.useParams({
+    select: (params) => params.categoryId,
+  })
 
-  // Find the category by ID
-  const category = useTodoStore((s) =>
-    s.categories.find((c) => c.id === categoryId)
-  )
+  const categories = useTodoStore((s) => s.categories)
+  const allTodos = useTodoStore((s) => s.todos)
 
-  // Get all todos belonging to this category
-  const todos = useTodoStore((s) =>
-    s.todos.filter((t) => t.category === categoryId)
-  )
+  const { category, todos } = useMemo(() => {
+    return {
+      category: categories.find((c) => c.id === categoryId),
+      todos: allTodos.filter((t) => t.category === categoryId),
+    }
+  }, [categories, allTodos, categoryId])
 
-  // If the category doesn't exist, show an error message
   if (!category) {
     return (
       <div className="p-8">
         <h1 className="text-2xl font-bold mb-4">Category not found</h1>
         <p className="mb-4">The category with ID "{categoryId}" does not exist.</p>
         <Link 
-          to="/categories" 
+          to="/category" 
           className="text-blue-600 hover:underline dark:text-blue-400"
         >
           ← Back to Categories
@@ -41,7 +43,7 @@ function CategoryTodosPage() {
         <h1 className="text-3xl font-bold mb-2">Todos in "{category.name}"</h1>
         <div className="flex items-center gap-4">
           <Link 
-            to="/categories" 
+            to="/category" 
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
             ← Back to Categories

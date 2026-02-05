@@ -5,6 +5,7 @@ export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
+
 function HomePage() {
   const todos = useTodoStore((s) => s.todos)
   const categories = useTodoStore((s) => s.categories)
@@ -27,7 +28,7 @@ function HomePage() {
           const category = categories.find((c) => c.id === todo.category)
 
           return (
-            <li key={todo.id} className="border p-4 rounded hover:bg-gray-50">
+            <li key={todo.id} className="border p-4 rounded">
               <Link to="/todos/$todoId" params={{ todoId: todo.id }}>
                 <h2 className="font-semibold">{todo.title}</h2>
                 <p className="text-sm text-gray-600">
