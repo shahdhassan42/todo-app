@@ -12,7 +12,7 @@ export const Route = createFileRoute('/todos/new')({
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [category, setCategory] = useState(categories[0]?.id || '')
-
+    {/*adding todo with validation on title and alert on success*/ }
     const handleSubmit = () => {
       if (!title) return alert('Title is required')
 

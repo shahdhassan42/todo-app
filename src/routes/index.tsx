@@ -11,35 +11,36 @@ function HomePage() {
   const categories = useTodoStore((s) => s.categories)
 
   return (
-   <div className="min-h-screen flex justify-center">
-  <div className="w-full max-w-2xl p-8">
 
-      <h1 className="text-3xl font-bold mb-4">Todos</h1>
+    <div className="min-h-screen flex justify-center">
+      <div className="w-full max-w-2xl p-8">
 
-      <Link
-        to="/todos/new"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        + Add Todo
-      </Link>
+        <h1 className="text-3xl font-bold mb-4">Todos</h1>
+        {/*Create a new todo*/}
+        <Link
+          to="/todos/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          + Add Todo
+        </Link>
+        {/*List of todos*/}
+        <ul className="mt-6 space-y-3">
+          {todos.map((todo) => {
+            const category = categories.find((c) => c.id === todo.category)
 
-      <ul className="mt-6 space-y-3">
-        {todos.map((todo) => {
-          const category = categories.find((c) => c.id === todo.category)
-
-          return (
-            <li key={todo.id} className="border p-4 rounded">
-              <Link to="/todos/$todoId" params={{ todoId: todo.id }}>
-                <h2 className="font-semibold">{todo.title}</h2>
-                <p className="text-sm text-gray-600">
-                  Category: {category?.name || 'None'}
-                </p>
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+            return (
+              <li key={todo.id} className="border p-4 rounded">
+                <Link to="/todos/$todoId" params={{ todoId: todo.id }}>
+                  <h2 className="font-semibold">{todo.title}</h2>
+                  <p className="text-sm text-gray-600">
+                    Category: {category?.name || 'None'}
+                  </p>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
     </div>
   )
 }
